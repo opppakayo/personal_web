@@ -1,0 +1,161 @@
+{
+ "version": 2,
+ "exportedAt": "2026-10-10T07:04:36.913Z",
+ "courses": [
+  {
+   "id": "course_mv0zbvi5mucq",
+   "title": "ROS 2 For Beginners ROS Jazzy",
+   "desc": "",
+   "tag": "Python , CPP",
+   "root": {
+    "id": "root_mv0zbvi5btos",
+    "name": "ROS 2 For Beginners ROS Jazzy",
+    "type": "folder",
+    "children": [
+     {
+      "id": "f_mv0zc3b988wk",
+      "name": "Python",
+      "type": "folder",
+      "children": [
+       {
+        "id": "f_mv0zcirashgb",
+        "name": "Write A Python Subscriber",
+        "type": "folder",
+        "children": [
+         {
+          "id": "c_mv0zis026mcq",
+          "name": "smartphone.py",
+          "type": "file",
+          "lang": "python",
+          "code": "#!/usr/bin/env python3\nimport rclpy\nfrom rclpy.node import Node\nfrom example_interfaces.msg import String\n\n\nclass SmartphoneNode(Node):\n\n  def __init__(self):\n    # Initialize the node name (avoid adding '_node' suffix to the node name)\n    super().__init__(\"smartphone\")\n\n    # Create a subscriber: (Message Type, Topic Name, Callback Function, Queue Size)\n    self.subscriber_ = self.create_subscription(\n        String, \"robot_news\", self.callback_robot_news, 10\n    )\n\n    self.get_logger().info(\"Smartphone has been started.\")\n\n  # Callback function executed whenever a new message is received\n  def callback_robot_news(self, msg: String):\n    # Print the 'data' field of the incoming String message\n    self.get_logger().info(msg.data)\n\n\ndef main(args=None):\n  rclpy.init(args=args)\n  node = SmartphoneNode()\n  rclpy.spin(node)\n  rclpy.shutdown()\n\n\nif __name__ == \"__main__\":\n  main()\n",
+          "cmd": "entry_points={\n        'console_scripts': [\n            \"smartphone = my_py_pkg.smartphone:main\",       \n            ],\n    },"
+         }
+        ]
+       },
+       {
+        "id": "f_mv0zcq7iwfdp",
+        "name": "Write a Python Publisher",
+        "type": "folder",
+        "children": [
+         {
+          "id": "c_mv0zjmv4dd3d",
+          "name": "robot_news_station.py",
+          "type": "file",
+          "lang": "python",
+          "code": "#!/usr/bin/env python3\nimport rclpy\nfrom rclpy.node import Node\nfrom example_interfaces.msg import String\n\nclass RobotNewsStationNode(Node):\n    def __init__(self):\n        # Initialize the base class with the node name \"robot_news_station\"\n        super().__init__(\"robot_news_station\")\n\n        # Define class attributes\n        self.robot_name_ = \"C3PO\"\n        \n        # Create the publisher: (Message Type, Topic Name, Queue Size)\n        self.publisher_ = self.create_publisher(String, \"robot_news\", 10)\n        \n        # Create a timer to run publish_news every 0.5 seconds (2 Hz)\n        self.timer_ = self.create_timer(0.5, self.publish_news)\n        \n        # Log node startup completion\n        self.get_logger().info(\"Robot News Station node has been started.\")\n\n    def publish_news(self):\n        # 1. Instantiate the message object\n        msg = String()\n        \n        # 2. Assign values to message fields\n        msg.data = \"Hi, this is \" + self.robot_name_ + \" from the robot news station.\"\n        \n        # 3. Publish the message to the topic\n        self.publisher_.publish(msg)\n\ndef main(args=None):\n    # Initialize rclpy communications\n    rclpy.init(args=args)\n    \n    # Instantiate the node\n    node = RobotNewsStationNode()\n    \n    # Keep node spinning to keep callbacks active\n    rclpy.spin(node)\n    \n    # Clean shutdown on interrupt (e.g., Ctrl+C)\n    rclpy.shutdown()\n\nif __name__ == \"__main__\":\n    main()\n",
+          "cmd": "entry_points={\n        'console_scripts': [\n            \"robot_news_station = my_py_pkg.robot_news_station:main\",       \n            ],\n    },"
+         }
+        ]
+       },
+       {
+        "id": "f_mv0zg63y7701",
+        "name": "Activity 02 – Solution 12",
+        "type": "folder",
+        "children": [
+         {
+          "id": "c_mv0zjy7i06qv",
+          "name": "number_publisher.py",
+          "type": "file",
+          "lang": "python",
+          "code": "#!/usr/bin/env python3\nimport rclpy\nfrom rclpy.node import Node\nfrom example_interfaces.msg import Int64\n\n\nclass NumberPublisherNode(Node):\n\n  def __init__(self):\n    super().__init__(\"number_publisher\")\n\n    # Internal state variable to publish\n    self.number_ = 2\n\n    # Create publisher: (Message Type, Topic Name, Queue Size)\n    self.number_publisher_ = self.create_publisher(Int64, \"number\", 10)\n\n    # Create timer: (Period in seconds, Callback Function)\n    self.number_timer_ = self.create_timer(1.0, self.publish_number)\n\n    self.get_logger().info(\"Number Publisher has been started.\")\n\n  def publish_number(self):\n    msg = Int64()\n    msg.data = self.number_\n    self.number_publisher_.publish(msg)\n\n\ndef main(args=None):\n  rclpy.init(args=args)\n  node = NumberPublisherNode()\n  rclpy.spin(node)\n  rclpy.shutdown()\n\n\nif __name__ == \"__main__\":\n  main()",
+          "cmd": "entry_points={\n        'console_scripts': [\n            \"number_publisher = my_py_pkg.number_publisher:main\",       \n            ],\n    },"
+         }
+        ]
+       },
+       {
+        "id": "f_mv0zgazdj1en",
+        "name": "Activity 02 – Solution 22",
+        "type": "folder",
+        "children": [
+         {
+          "id": "c_mv0zkdxgrlcc",
+          "name": "number_counter.py",
+          "type": "file",
+          "lang": "python",
+          "code": "#!/usr/bin/env python3\nimport rclpy\nfrom rclpy.node import Node\nfrom example_interfaces.msg import Int64\n\n\nclass NumberCounterNode(Node):\n\n  def __init__(self):\n    super().__init__(\"number_counter\")\n\n    # State variable for cumulative sum\n    self.counter_ = 0\n\n    # Subscriber to read incoming numbers\n    self.number_subscriber_ = self.create_subscription(\n        Int64, \"number\", self.callback_number, 10\n    )\n\n    # Publisher to broadcast the updated counter value\n    self.number_count_publisher_ = self.create_publisher(\n        Int64, \"number_count\", 10\n    )\n\n    self.get_logger().info(\"Number Counter node has been started.\")\n\n  def callback_number(self, msg: Int64):\n    # 1. Update cumulative total\n    self.counter_ += msg.data\n\n    # 2. Construct and publish updated counter message\n    new_msg = Int64()\n    new_msg.data = self.counter_\n    self.number_count_publisher_.publish(new_msg)\n\n\ndef main(args=None):\n  rclpy.init(args=args)\n  node = NumberCounterNode()\n  rclpy.spin(node)\n  rclpy.shutdown()\n\n\nif __name__ == \"__main__\":\n  main()",
+          "cmd": "entry_points={\n        'console_scripts': [\n            \"number_counter = my_py_pkg.number_counter:main\",       \n            ],\n    },"
+         }
+        ]
+       },
+       {
+        "id": "f_mv0zgf363mlh",
+        "name": "Write a Python Service Server",
+        "type": "folder",
+        "children": [
+         {
+          "id": "c_mv0zkru559n6",
+          "name": "add_two_ints_server.py",
+          "type": "file",
+          "lang": "python",
+          "code": "#!/usr/bin/env python3\nimport rclpy\nfrom rclpy.node import Node\nfrom example_interfaces.srv import AddTwoInts\n\nclass AddTwoIntsServerNode(Node):\n    def __init__(self):\n        super().__init__('add_two_ints_server')\n        \n        # Create the Service Server\n        # Syntax: create_service(ServiceInterface, 'service_name', callback_function)\n        self.server_ = self.create_service(\n            AddTwoInts, \n            'add_two_ints', \n            self.callback_add_two_ints\n        )\n        \n        self.get_logger().info('Add Two Ints Server has been started.')\n\n    def callback_add_two_ints(self, request: AddTwoInts.Request, response: AddTwoInts.Response) -> AddTwoInts.Response:\n        # 1. Process the request fields (A and B)\n        response.sum = request.a + request.b\n        \n        # 2. Log the operation details to terminal\n        self.get_logger().info(f\"{request.a} + {request.b} = {response.sum}\")\n        \n        # 3. CRITICAL: Always return the populated response object\n        return response\n\ndef main(args=None):\n    rclpy.init(args=args)\n    node = AddTwoIntsServerNode()\n    rclpy.spin(node)\n    rclpy.shutdown()\n\nif __name__ == '__main__':\n    main()\n",
+          "cmd": "entry_points={\n        'console_scripts': [\n            \"add_two_ints_server = my_py_pkg.add_two_ints_server:main\",       \n            ],\n    },"
+         }
+        ]
+       },
+       {
+        "id": "f_mv0zgjdgcp92",
+        "name": "Write a Python Service Client - no OOP",
+        "type": "folder",
+        "children": [
+         {
+          "id": "c_mv0zkzyggtmq",
+          "name": "add_two_ints_client_no_oop.py",
+          "type": "file",
+          "lang": "python",
+          "code": "#!/usr/bin/env python3\nimport rclpy\nfrom rclpy.node import Node\nfrom example_interfaces.srv import AddTwoInts\n\ndef main(args=None):\n    # 1. Initialize ROS 2 communications\n    rclpy.init(args=args)\n\n    # 2. Create Node and Client\n    node = Node('add_two_ints_client_no_oop')\n    client = node.create_client(AddTwoInts, 'add_two_ints')\n\n    # 3. Wait for the Service Server to start\n    while not client.wait_for_service(timeout_sec=1.0):\n        node.get_logger().warn('Waiting for /add_two_ints server to start...')\n\n    # 4. Create and populate Request\n    request = AddTwoInts.Request()\n    request.a = 3\n    request.b = 8\n\n    # 5. Send request asynchronously\n    future = client.call_async(request)\n\n    # 6. Spin until future is complete\n    rclpy.spin_until_future_complete(node, future)\n\n    # 7. Get response\n    try:\n        response = future.result()\n        node.get_logger().info(f\"{request.a} + {request.b} = {response.sum}\")\n    except Exception as e:\n        node.get_logger().error(f\"Service call failed: {e}\")\n\n    # 8. Clean up\n    node.destroy_node()\n    rclpy.shutdown()\n\nif __name__ == '__main__':\n    main()",
+          "cmd": "entry_points={\n        'console_scripts': [\n            \"add_two_ints_client_no_oop = my_py_pkg.add_two_ints_client_no_oop:main\",       \n            ],\n    },"
+         }
+        ]
+       },
+       {
+        "id": "f_mv0zgnotnuri",
+        "name": "Write a Python Service Client – OOP",
+        "type": "folder",
+        "children": [
+         {
+          "id": "c_mv0zl82an7tj",
+          "name": "add_two_ints_client.py",
+          "type": "file",
+          "lang": "python",
+          "code": "#!/usr/bin/env python3\nfrom functools import partial\nimport rclpy\nfrom rclpy.node import Node\nfrom example_interfaces.srv import AddTwoInts\n\nclass AddTwoIntsClientNode(Node):\n    def __init__(self):\n        super().__init__('add_two_ints_client')\n        \n        # 1. Create the Service Client attribute\n        # Syntax: create_client(ServiceInterface, 'service_name')\n        self.client_ = self.create_client(AddTwoInts, 'add_two_ints')\n\n    def call_add_two_ints_service(self, a: int, b: int):\n        # 2. Wait until the target service server is active\n        while not self.client_.wait_for_service(timeout_sec=1.0):\n            self.get_logger().warn('Waiting for server /add_two_ints...')\n\n        # 3. Create and populate the request object\n        request = AddTwoInts.Request()\n        request.a = a\n        request.b = b\n\n        # 4. Call the service asynchronously (returns a Future object)\n        future = self.client_.call_async(request)\n\n        # 5. Attach a completion callback to process the response\n        # Use partial() to pass the original request object into the callback\n        future.add_done_callback(\n            partial(self.callback_add_two_ints, request=request)\n        )\n\n    def callback_add_two_ints(self, future, request):\n        try:\n            # 6. Extract the result from the completed Future\n            response = future.result()\n            self.get_logger().info(\n                f\"{request.a} + {request.b} = {response.sum}\"\n            )\n        except Exception as e:\n            self.get_logger().error(f\"Service call failed: {e}\")\n\ndef main(args=None):\n    rclpy.init(args=args)\n    node = AddTwoIntsClientNode()\n\n    # Dispatch three asynchronous service calls\n    node.call_add_two_ints_service(2, 7)\n    node.call_add_two_ints_service(1, 4)\n    node.call_add_two_ints_service(10, 20)\n\n    # Keep the node spinning to handle incoming response callbacks\n    rclpy.spin(node)\n    \n    node.destroy_node()\n    rclpy.shutdown()\n\nif __name__ == '__main__':\n    main()",
+          "cmd": "entry_points={\n        'console_scripts': [\n            \"add_two_ints_client = my_py_pkg.add_two_ints_client:main\",       \n            ],\n    },"
+         }
+        ]
+       },
+       {
+        "id": "f_mv0zgzzu2ccq",
+        "name": "Activity 03 – Solution",
+        "type": "folder",
+        "children": [
+         {
+          "id": "c_mv0zlir0d9ka",
+          "name": "number_counter.py",
+          "type": "file",
+          "lang": "python",
+          "code": "#!/usr/bin/env python3\nimport rclpy\nfrom rclpy.node import Node\nfrom example_interfaces.msg import Int64\nfrom example_interfaces.srv import SetBool  # 1. Import SetBool Service Interface\n\nclass NumberCounterNode(Node):\n    def __init__(self):\n        super().__init__('number_counter')\n        \n        # Internal counter state\n        self.counter_ = 0\n\n        # Subscriber: Receives integers on topic '/number'\n        self.subscriber_ = self.create_subscription(\n            Int64, 'number', self.callback_number, 10\n        )\n\n        # Publisher: Publishes accumulated count on topic '/number_count'\n        self.publisher_ = self.create_publisher(\n            Int64, 'number_count', 10\n        )\n\n        # 2. Service Server: Resets counter variable via service '/reset_counter'\n        self.reset_counter_service_ = self.create_service(\n            SetBool, 'reset_counter', self.callback_reset_counter\n        )\n\n        self.get_logger().info('Number Counter Node has been started.')\n\n    def callback_number(self, msg: Int64):\n        # Increment internal counter by incoming topic value\n        self.counter_ += msg.data\n        \n        # Publish current counter value\n        new_msg = Int64()\n        new_msg.data = self.counter_\n        self.publisher_.publish(new_msg)\n\n    def callback_reset_counter(self, request: SetBool.Request, response: SetBool.Response) -> SetBool.Response:\n        # 3. Process the service request payload\n        if request.data:\n            self.counter_ = 0\n            response.success = True\n            response.message = \"Counter has been reset\"\n            self.get_logger().info('Counter reset to 0 via service call.')\n        else:\n            response.success = False\n            response.message = \"Counter has not been reset\"\n            self.get_logger().warn('Reset service called with data=False. Counter unaffected.')\n\n        # CRITICAL: Always return the populated response object\n        return response\n\ndef main(args=None):\n    rclpy.init(args=args)\n    node = NumberCounterNode()\n    rclpy.spin(node)\n    rclpy.shutdown()\n\nif __name__ == '__main__':\n    main()\n",
+          "cmd": "entry_points={\n        'console_scripts': [\n            \"number_counter = my_py_pkg.number_counter:main\",       \n            ],\n    },"
+         }
+        ]
+       },
+       {
+        "id": "f_mv20d7qjt89u",
+        "name": "Use Your Custom Msg in a Python Node",
+        "type": "folder",
+        "children": [
+         {
+          "id": "c_mv20dui3puzb",
+          "name": "hardware_status_publisher.py",
+          "type": "file",
+          "lang": "python",
+          "code": "#!/usr/bin/env python3\nimport rclpy\nfrom rclpy.node import Node\n\n# 1. Import your custom interface\nfrom my_robot_interfaces.msg import HardwareStatus\n\nclass HardwareStatusPublisherNode(Node):\n    def __init__(self):\n        super().__init__('hardware_status_publisher')\n        \n        # 2. Create the publisher using the custom message type\n        self.hw_status_pub = self.create_publisher(HardwareStatus, 'hardware_status', 10)\n        \n        # 3. Create a timer to publish every 1 second\n        self.timer = self.create_timer(1.0, self.publish_hardware_status)\n        self.get_logger().info(\"Hardware status publisher has been started.\")\n\n    def publish_hardware_status(self):\n        # 4. Instantiate and populate the custom message object\n        msg = HardwareStatus()\n        msg.temperature = 43.7\n        msg.motors_ready = True\n        msg.debug_message = \"Nothing special\"\n        \n        # 5. Publish the message\n        self.hw_status_pub.publish(msg)\n\ndef main(args=None):\n    rclpy.init(args=args)\n    node = HardwareStatusPublisherNode()\n    rclpy.spin(node)\n    node.destroy_node()\n    rclpy.shutdown()\n\nif __name__ == '__main__':\n    main()",
+          "cmd": "entry_points={\n    'console_scripts': [\n        'hardware_status_publisher = my_py_pkg.hardware_status_publisher:main',\n    ],\n},"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}
