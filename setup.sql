@@ -1,5 +1,5 @@
 -- Paste this whole file into Supabase -> SQL Editor -> Run.
--- Replace YOUR_EMAIL@example.com (appears 3 times) with the email you log in with.
+-- Replace oppakayo141@gmail.com (appears 3 times) with the email you log in with.
 -- Safe to run more than once.
 
 create table if not exists public.vault (
